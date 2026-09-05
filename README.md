@@ -54,7 +54,15 @@ The Cloudflare production bundle is written to `dist/`.
 
 ## Contact form configuration
 
-The form validates in the browser. It deliberately does not display fake success when no delivery service exists. Set `NEXT_PUBLIC_CONTACT_ENDPOINT` to an HTTPS form endpoint from a Cloudflare Worker, Supabase Edge Function, Formspree, or another service. The endpoint must accept `multipart/form-data` POST requests. Until configured, visitors receive the real contact email `irrivoapp@gmail.com`.
+The production form posts to the `website-contact` Supabase Edge Function in `supabase/functions/website-contact/index.ts`. The function validates requests, accepts submissions only from `irrivo.com`, and delivers them to `irrivoapp@gmail.com` through Resend. Its API key is stored as the encrypted Supabase secret `RESEND_API_KEY`; it is never shipped to the browser or committed to Git.
+
+To deploy the function after editing it:
+
+```bash
+supabase functions deploy website-contact --project-ref jzhxzxufzjzcaphmsqtf --no-verify-jwt
+```
+
+The form does not fake a successful submission: visitors see success only after the server confirms delivery. Add bot protection such as Cloudflare Turnstile if public traffic produces spam.
 
 ## Cloudflare deployment
 
@@ -63,8 +71,7 @@ The form validates in the browser. It deliberately does not display fake success
 3. Set the production branch to `main`.
 4. Use build command `pnpm build`.
 5. Use the generated Cloudflare configuration in `dist/server/wrangler.json`. If the dashboard asks for a deploy command, use `npx wrangler deploy --config dist/server/wrangler.json`.
-6. Add `NEXT_PUBLIC_CONTACT_ENDPOINT` only after a real form endpoint exists. It may remain empty for the first release.
-7. Deploy and confirm the temporary `*.workers.dev` or `*.pages.dev` URL before connecting the domain.
+6. Deploy and confirm the temporary `*.workers.dev` or `*.pages.dev` URL before connecting the domain.
 
 ### Connect irrivo.com
 
@@ -88,7 +95,7 @@ The example people, departments and metrics are fictional. Pricing amounts remai
 
 1. Treat the owner's GitHub repository as the primary code backup.
 2. Retain this project folder on the Mac as a local copy.
-3. Back up environment variables in a password manager. Never commit `.env.local` or API keys.
+3. Back up environment variables and the Resend API key in a password manager. Never commit `.env.local` or API keys. The live Resend key is also stored as an encrypted Supabase Edge Function secret.
 4. Domain ownership remains in the owner's Cloudflare account.
 5. Preserve the deployment settings from the Cloudflare section above so the project can be recreated if it is deleted.
 6. Document every external service added later, including account owner, purpose, environment variables and setup steps.
@@ -97,6 +104,8 @@ To restore on a fresh computer: install Node.js and pnpm, clone the GitHub repos
 
 ## External services and future work
 
-Current runtime integrations: none. The marketing site works without a database, analytics provider, payment provider or form service. Optional future work includes contact form delivery, privacy-respecting analytics, a CMS, a customer portal, product authentication and the separate `app.irrivo.com` application.
+Current runtime services are Cloudflare for hosting and DNS, GitHub for source backup and deployments, Supabase for the contact Edge Function, and Resend for contact-email delivery. Watchmore Studios owns each account. No browser-visible environment variables are required for the current release.
+
+Optional future work includes Cloudflare Turnstile, privacy-respecting analytics, a CMS, customer authentication and the separate `app.irrivo.com` application. The `/sign-in` route clearly explains that the secure web workspace is still being prepared and directs existing users to the mobile app.
 
 The privacy policy and terms are structured publication drafts and should receive professional legal review as the product, payment flow and operating markets are finalized.
