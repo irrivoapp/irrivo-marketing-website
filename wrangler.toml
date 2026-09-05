@@ -1,0 +1,5 @@
+name = "irrivo-marketing-website"
+compatibility_date = "2026-05-22"
+
+# `pnpm build` generates the Cloudflare-compatible Worker configuration in dist/server.
+# For dashboard deployment, connect the GitHub repository and use the commands in README.md.

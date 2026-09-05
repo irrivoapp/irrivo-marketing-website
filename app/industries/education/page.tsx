@@ -1,0 +1,1 @@
+import type{Metadata}from'next';import{MarketingPage}from'@/components/page-template';import{industryPages}from'@/data/pages';export const metadata:Metadata={title:'IRRIVO for Education'};export default function Page(){return <MarketingPage data={industryPages.education}/>}

@@ -1,0 +1,1 @@
+import type{Metadata}from'next';import{MarketingPage}from'@/components/page-template';import{featurePages}from'@/data/pages';export const metadata:Metadata={title:'Features',description:'Explore IRRIVO scheduling, attendance, geofencing, analytics and Ask Shady AI.'};export default function Page(){return <MarketingPage data={featurePages.features}/>}

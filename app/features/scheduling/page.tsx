@@ -1,0 +1,1 @@
+import type{Metadata}from'next';import{MarketingPage}from'@/components/page-template';import{featurePages}from'@/data/pages';export const metadata:Metadata={title:'Workforce Scheduling',description:'Build automatic and structured workforce rosters with IRRIVO.'};export default function Page(){return <MarketingPage data={featurePages.scheduling} visual="roster"/>}
